@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: HomeView
     },
     {
       path: '/playground',
@@ -15,9 +15,22 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/DashboardView.vue')
+      component: () => import('../views/DashboardView.vue'),
+      beforeEnter: () => {}
     }
   ]
+})
+
+// Router Guard
+router.beforeEach(async (to) => {
+  const isAuthenticated = localStorage.getItem('token')
+  
+  // Handle User Access
+  if (!isAuthenticated && to.name !== 'home') {
+    return { name: 'home' }
+  } else if (isAuthenticated && to.name === 'home') {
+    return { name: 'dashboard' }
+  }
 })
 
 export default router
