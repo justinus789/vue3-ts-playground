@@ -18,7 +18,7 @@
           maxlength="12"
         />
 
-        <button :disabled="isLoading" type="submit" class="btn-submit">Register User</button>
+        <button :disabled="isLoading" type="submit" class="btn-submit">Register</button>
       </form>
     </div>
   </div>

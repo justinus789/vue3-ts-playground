@@ -40,7 +40,7 @@ router.beforeEach(async (to) => {
     // if the user is not logged in, redirect to the login page
     if (!currentUser) {
       return {
-        name: '/login',
+        name: 'login',
         query: {
           // we keep the current path in the query so we can
           // redirect to it after login with

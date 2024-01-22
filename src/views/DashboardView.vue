@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <button @click="back()" style="margin-bottom: 1rem">Back</button>
+    <button @click="signOut()" style="margin-bottom: 1rem">Sign out</button>
     <h1>{{ userInfo.displayName }}</h1>
   </div>
 </template>
@@ -8,13 +8,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getCurrentUser } from 'vuefire'
+import { getCurrentUser, useFirebaseAuth } from 'vuefire'
 
 const router = useRouter()
 const userInfo = ref<any>({})
+const auth = useFirebaseAuth()
 
-const back = () => {
-  router.back()
+const signOut = () => {
+  auth?.signOut()
+  router.push({ name: 'login' })
 }
 
 onMounted(async () => {
@@ -29,3 +31,9 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style>
+#dashboard {
+  padding: 1rem;
+}
+</style>
