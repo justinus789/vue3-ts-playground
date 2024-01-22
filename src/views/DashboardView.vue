@@ -1,20 +1,17 @@
 <template>
   <div id="dashboard">
     <button @click="back()" style="margin-bottom: 1rem">Back</button>
-    <h1>{{ userInfo.firstName }}</h1>
+    <h1>{{ userInfo.displayName }}</h1>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { storeToRefs } from 'pinia'
+import { getCurrentUser } from 'vuefire'
 
 const router = useRouter()
-const userStore = useUserStore()
-
-const { userInfo } = storeToRefs(userStore)
+const userInfo = ref<any>({})
 
 const back = () => {
   router.back()
@@ -22,22 +19,7 @@ const back = () => {
 
 onMounted(async () => {
   try {
-    const response = await fetch('https://dummyjson.com/auth/me', {
-      method: 'GET',
-      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('token')
-        router.push({ name: 'home' })
-      }
-      throw new Error(data.message)
-    }
-
-    userInfo.value = data
+    userInfo.value = await getCurrentUser()
   } catch (err) {
     if (typeof err === 'string') {
       console.log(err)

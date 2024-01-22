@@ -4,15 +4,9 @@
       <div class="title-container">
         <h2>Login Vue Playground</h2>
       </div>
-      <form class="form-login">
-        <p>Username:</p>
-        <input
-          id="username"
-          type="text"
-          v-model="user.username"
-          autocomplete="username"
-          minlength="6"
-        />
+      <form class="form-login" @submit.prevent="handleSubmit">
+        <p>Email:</p>
+        <input id="email" type="text" v-model="user.email" autocomplete="email" minlength="6" />
         <p>Password:</p>
         <input
           id="password"
@@ -22,36 +16,38 @@
           maxlength="12"
         />
 
-        <button :disabled="isLoading" class="btn-submit" @click.prevent="handleSubmit">
-          submit
-        </button>
+        <button type="submit" :disabled="isLoading" class="btn-submit">submit</button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { storeToRefs } from 'pinia'
+import { useFirebaseAuth } from 'vuefire'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { isValidEmail } from '@/utils/formValidation'
 
 interface User {
-  username: string
+  email: string
   password: string
 }
 
-const dummyApiURL = 'https://dummyjson.com'
 const router = useRouter()
-const userStore = useUserStore()
+const auth = useFirebaseAuth()!
 
-const { userInfo } = storeToRefs(userStore)
-const user = ref<User>({ username: '', password: '' })
+const user = ref<User>({ email: '', password: '' })
 const isLoading = ref<boolean>(false)
 
 const validateUser = () => {
-  if (user.value.username.length < 6 || user.value.username.length > 12) {
-    alert('username length should be 6 - 12')
+  if (!isValidEmail(user.value.email)) {
+    alert('email is not valid')
+    return false
+  }
+
+  if (user.value.email.length < 6) {
+    alert('email length should be minimum 6')
     return false
   }
 
@@ -66,20 +62,7 @@ const validateUser = () => {
 const login = async () => {
   try {
     isLoading.value = true
-
-    const response = await fetch(`${dummyApiURL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user.value)
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.message)
-    }
-
-    localStorage.setItem('token', data.token)
+    await signInWithEmailAndPassword(auth, user.value.email, user.value.password)
 
     router.push({ name: 'dashboard' })
   } catch (err) {
@@ -98,10 +81,6 @@ const handleSubmit = async () => {
     await login()
   }
 }
-
-onMounted(() => {
-  console.log(userInfo.value.firstName)
-})
 </script>
 
 <style scoped>
@@ -120,7 +99,7 @@ onMounted(() => {
   border-radius: 10px;
   padding: 1rem;
   background-color: skyblue;
-  width: 30%;
+  width: 350px;
 }
 
 .title-container > h2 {
