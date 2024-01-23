@@ -2,7 +2,7 @@
   <div class="container">
     <div class="login-container">
       <div class="title-container">
-        <h2>Login Vue Playground</h2>
+        <h2>Login</h2>
       </div>
       <form class="form-login" @submit.prevent="handleSubmit">
         <p>Email:</p>
@@ -16,7 +16,7 @@
           maxlength="12"
         />
 
-        <button type="submit" :disabled="isLoading" class="btn-submit">submit</button>
+        <ButtonComponent type="submit" :disabled="isLoading" style="margin-top: 1rem;">submit</ButtonComponent>
       </form>
     </div>
   </div>
@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router'
 import { useFirebaseAuth } from 'vuefire'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { isValidEmail } from '@/utils/formValidation'
+import ButtonComponent from '@/components/ButtonComponent.vue'
 
 interface User {
   email: string
@@ -64,7 +65,7 @@ const login = async () => {
     isLoading.value = true
     await signInWithEmailAndPassword(auth, user.value.email, user.value.password)
 
-    router.push({ name: 'dashboard' })
+    router.push({ name: 'todo' })
   } catch (err) {
     if (typeof err === 'string') {
       alert(err.toUpperCase())
@@ -124,24 +125,5 @@ const handleSubmit = async () => {
   width: 100%;
   padding: 0.5rem;
   border-radius: 4px;
-}
-
-.btn-submit {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-  background-color: burlywood;
-  padding: 0.3rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: blueviolet;
-  cursor: pointer;
-}
-
-.btn-submit:disabled {
-  cursor: default;
-  color: #c39cf0;
-  background-color: #d4d3d1;
 }
 </style>

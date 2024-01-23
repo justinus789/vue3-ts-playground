@@ -2,7 +2,7 @@
   <div class="container">
     <div class="register-container">
       <div class="title-container">
-        <h2>Register Vue Playground</h2>
+        <h2>Register</h2>
       </div>
       <form class="form-register" @submit.prevent="handleSubmit">
         <p>Name:</p>
@@ -18,7 +18,7 @@
           maxlength="12"
         />
 
-        <button :disabled="isLoading" type="submit" class="btn-submit">Register</button>
+        <ButtonComponent type="submit" :disabled="isLoading" style="margin-top: 1rem;">Register</ButtonComponent>
       </form>
     </div>
   </div>
@@ -30,6 +30,7 @@ import { useRouter } from 'vue-router'
 import { useFirebaseAuth, updateCurrentUserProfile } from 'vuefire'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { isValidEmail } from '@/utils/formValidation'
+import ButtonComponent from '@/components/ButtonComponent.vue'
 
 interface User {
   name: string
@@ -134,24 +135,4 @@ const handleSubmit = async () => {
   padding: 0.5rem;
   border-radius: 4px;
 }
-
-.btn-submit {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-  background-color: burlywood;
-  padding: 0.3rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: blueviolet;
-  cursor: pointer;
-}
-
-.btn-submit:disabled {
-  cursor: default;
-  color: #c39cf0;
-  background-color: #d4d3d1;
-}
 </style>
-../utils/formValidation../helpers/validation@/utils/formValidation

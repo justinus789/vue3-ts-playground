@@ -25,11 +25,25 @@ const router = createRouter({
     },
     {
       path: '/playground',
-      name: 'dashboard',
       component: () => import('../views/DashboardView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: '',
+          name: 'todo',
+          component: () => import('@/views/DashboardView/ToDoView.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: () => import('@/views/DashboardView/SettingsView.vue'),
+          meta: { requiresAuth: true }
+        }
+      ]
     }
-  ]
+  ],
+  linkExactActiveClass: 'active'
 })
 
 // Router Guard
